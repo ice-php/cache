@@ -13,3 +13,11 @@ function cache(string $type): CacheBase
 {
     return CacheFactory::instance($type);
 }
+
+/**
+ * 清除全部缓存
+ */
+function clearCache(): void
+{
+    CacheFactory::clearAll();
+}
