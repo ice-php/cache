@@ -1,0 +1,44 @@
+{
+  "name": "ice-php/cache",
+  "description": "缓存",
+  "keywords": [
+    "icePHP",
+    "cache",
+    "memcache",
+    "redis",
+    "file cache"
+  ],
+  "homepage": "https://github.com/ice-php/cache",
+  "type": "composer",
+  "license": "MIT",
+  "support": {
+    "source": "https://github.com/ice-php/cache"
+  },
+  "authors": [
+    {
+      "name": "blueice",
+      "email": "liyong@nenu.edu.cn"
+    }
+  ],
+  "require": {
+    "php": ">=7.1.0",
+    "ice-php/config": "dev-master",
+    "ice-php/redis": "dev-master",
+    "ice-php/filelog": "dev-master"
+  },
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "icePHP\\": "src"
+    }
+  },
+  "repositories": {
+    "packagist": {
+      "type": "composer",
+      "url": "https://packagist.org"
+    }
+  },
+  "config": {
+    "process-timeout": 1800
+  }
+}
