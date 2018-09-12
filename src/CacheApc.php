@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace icePHP;
 /**
  * 使用共享内存缓存一些数据
@@ -60,23 +61,13 @@ final class CacheApc extends CacheBase
      *
      * @param string $srcKey 要缓存的数据名(Key),取数据时要用到,可以是复杂名字
      * @param mixed $data 要缓存的数据,可以是复杂数据结构
-     * @param mixed $expire 有效期,可以是以下格式
-     * 秒数: 指定秒数内有效
-     *            时间戳: 指定时间戳前有效
-     *            'Today': 当天有效
-     * @throws \Exception
+     * @param int $expire 秒数
      * @return bool
      */
     protected function doSet(string $srcKey, $data, int $expire = 0): bool
     {
-        // 计算有效期
-        $expire = $this->expire($expire);
-        if (!$expire) {
-            return false;
-        }
-
         $func = self::$type . '_store';
-        $func($srcKey, $data, $expire - time());
+        $func($srcKey, $data, $expire);
         return true;
     }
 

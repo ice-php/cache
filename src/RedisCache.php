@@ -47,7 +47,7 @@ final class RedisCache extends CacheBase
     {
         try {
             Redis::delete(Redis::listKeys(self::PREFIX . '*'));
-        } catch (\Exception $exception) {
+        } catch (RedisException $exception) {
             writeLog('redis_cache',$exception->getMessage());
         }
         return true;
@@ -62,7 +62,7 @@ final class RedisCache extends CacheBase
     {
         try {
             Redis::delete(self::PREFIX . $key);
-        } catch (\Exception $exception) {
+        } catch (RedisException $exception) {
             writeLog('redis_cache',$exception->getMessage());
         }
         return true;
@@ -75,7 +75,7 @@ final class RedisCache extends CacheBase
     {
         try {
             Redis::connection()->ping();
-        } catch (\Exception $exception) {
+        } catch (RedisException $exception) {
             writeLog('redis_cache',$exception->getMessage());
         }
         return true;
@@ -91,7 +91,7 @@ final class RedisCache extends CacheBase
         //从缓存中取值,并解码
         try {
             $value = json_decode(Redis::getString(self::PREFIX . $key), true);
-        } catch (\Exception $exception) {
+        } catch (RedisException $exception) {
             writeLog('redis_cache',$exception->getMessage());
             return null;
         }
@@ -117,7 +117,7 @@ final class RedisCache extends CacheBase
         //我们不关注返回值
         try {
             Redis::createString(self::PREFIX . $key, json($data), true, $expire);
-        } catch (\Exception $exception) {
+        } catch (RedisException $exception) {
             writeLog('redis_cache',$exception->getMessage());
         }
         return true;
@@ -144,7 +144,7 @@ final class RedisCache extends CacheBase
 
             //向FIELD中增加一个键
             $field->append($key);
-        } catch (\Exception $exception) {
+        } catch (RedisException $exception) {
             writeLog('redis_cache',$exception->getMessage());
         }
         return true;
@@ -167,7 +167,7 @@ final class RedisCache extends CacheBase
                 foreach ($keys as $key) {
                     $this->clear($key);
                 }
-            } catch (\Exception $exception) {
+            } catch (RedisException $exception) {
                 writeLog('redis_cache',$exception->getMessage());
             }
             return true;
@@ -188,7 +188,7 @@ final class RedisCache extends CacheBase
 
             //删除所有键,以及域
             Redis::delete(array_merge($keys, [self::PREFIX . 'FIELD:' . $field]));
-        } catch (\Exception $exception) {
+        } catch (RedisException $exception) {
             writeLog('redis_cache',$exception->getMessage());
         }
         return true;

@@ -41,37 +41,6 @@ abstract class CacheBase
     abstract public function clearAll():bool ;
 
     /**
-     * 计算有效期
-     *
-     * @param mixed $expire 有效期,可以是以下格式
-     *            秒数: 指定秒数内有效
-     *            时间戳: 指定时间戳前有效
-     *            'Today': 当天有效
-     * @throws \Exception
-     * @return int
-     */
-    protected function expire($expire):int
-    {
-        // 如果未提供有效期,按一年算
-        if (!$expire) {
-            return time() + 365 * 24 * 60 * 60;
-        }
-
-        // 如果是Today字符串,认为是当天有效
-        if ($expire == 'Today') {
-            return strtotime(date('Y-m-d')) + 24 * 60 * 60 - 1;
-        }
-
-        // 如果是大于一年的整数,认为是截止时间戳
-        if (is_int($expire)) {
-            return $expire;
-        }
-
-        // 其它格式,抛出异常
-        throw new \Exception('cache invalid expire:' . $expire);
-    }
-
-    /**
      * 子类必须实现的抽象方法
      * 具体进行缓存
      *

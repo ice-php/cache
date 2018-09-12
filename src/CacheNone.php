@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace icePHP;
 
 /**
@@ -14,7 +15,7 @@ final class CacheNone extends CacheBase
      * @return boolean
      * @see CacheBase::clear()
      */
-    public function clear(string $field = null):bool
+    public function clear(string $field = null): bool
     {
         return true;
     }
@@ -24,18 +25,18 @@ final class CacheNone extends CacheBase
      *
      * @see CacheInterface::clearAll()
      */
-    public function clearAll():bool
+    public function clearAll(): bool
     {
         return true;
     }
 
     /**
      * 删除一个缓存数据
-     * @param string $key  缓存数据的名称(键)
+     * @param string $key 缓存数据的名称(键)
      * @return bool
      * @see SCacheInterface::delete()
      */
-    public function delete(string $key):bool
+    public function delete(string $key): bool
     {
         return true;
     }
@@ -43,7 +44,7 @@ final class CacheNone extends CacheBase
     /**
      * 读取一个缓存的数据
      *
-     * @param string $key   缓存数据的名称(键)
+     * @param string $key 缓存数据的名称(键)
      * @see CacheInterface::get()
      * @return mixed
      */
@@ -59,7 +60,7 @@ final class CacheNone extends CacheBase
      * @return boolean
      * @see CacheBase::doSet
      */
-    protected function doSet(string $key, $data, int $expire = 0):bool
+    protected function doSet(string $key, $data, int $expire = 0): bool
     {
         return true;
     }
@@ -69,7 +70,7 @@ final class CacheNone extends CacheBase
      *
      * @see CacheInterface::enabled()
      */
-    public function enabled():bool
+    public function enabled(): bool
     {
         return false;
     }

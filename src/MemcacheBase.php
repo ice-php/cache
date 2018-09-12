@@ -96,9 +96,8 @@ abstract class MemcacheBase extends CacheBase
      * 缓存一条数据
      * @param string $key 键(实际是查询语句)
      * @param mixed $data 数据
-     * @param $expire int 有效期
+     * @param $expire int 有效期(秒数,0表示永久)
      * @return  bool
-     * @throws \Exception
      */
     protected function doSet(string $key, $data, int $expire = 0): bool
     {
@@ -108,7 +107,7 @@ abstract class MemcacheBase extends CacheBase
         $handle = $this->_handle;
 
         // 缓存数据
-        return $handle->set($key, $data, MEMCACHE_COMPRESSED, $this->expire($expire));
+        return $handle->set($key, $data, MEMCACHE_COMPRESSED, $expire);
     }
 
     /**

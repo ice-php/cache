@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace icePHP;
 /**
  * 缓存 工厂
@@ -41,11 +42,11 @@ final class CacheFactory
     {
         // 取相应类型的缓存配置要求
         if ($type == 'page') {
-            $config = Config::get('system', 'cachePage');
+            $config = configDefault('none', 'system', 'cachePage');
         } elseif ($type == 'data') {
-            $config = Config::get('system', 'cacheData');
+            $config = configDefault('none', 'system', 'cacheData');
         } elseif ($type == 'must') {
-            $config = Config::get('system', 'cacheMust');
+            $config = configDefault('file', 'system', 'cacheMust');
         } else {
             $config = 'none';
         }

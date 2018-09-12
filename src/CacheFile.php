@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace icePHP;
 
 /**
@@ -11,16 +12,10 @@ namespace icePHP;
 final class CacheFile extends CacheBase
 {
     /**
-     * @var array 保存当前的配置
-     */
-    protected $config;
-
-    /**
      * 禁止实例化
      */
     private function __construct()
     {
-        $this->config = Config::get('filecache');
     }
 
     /**
@@ -54,21 +49,11 @@ final class CacheFile extends CacheBase
      *
      * @param string $srcKey 要缓存的数据名(Key),取数据时要用到,可以是复杂名字
      * @param mixed $data 要缓存的数据,可以是复杂数据结构
-     * @param mixed $expire 有效期,可以是以下格式
-     * 秒数: 指定秒数内有效
-     *            时间戳: 指定时间戳前有效
-     *            'Today': 当天有效
-     * @throws \Exception
+     * @param int $expire 秒数
      * @return bool
      */
     protected function doSet(string $srcKey, $data, int $expire = 0): bool
     {
-        // 计算有效期
-        $expire = $this->expire($expire);
-        if (!$expire) {
-            return false;
-        }
-
         // 获取文件名与文件位置
         list ($key, $path, $sqlPath) = $this->getFile($srcKey);
 
@@ -83,7 +68,7 @@ final class CacheFile extends CacheBase
 
         // 取出目录,修改,保存回去
         $fileList = $this->getFileList();
-        $fileList[$key] = $expire;
+        $fileList[$key] = $expire + time();
         $this->setFileList($fileList);
 
         return true;
@@ -187,9 +172,6 @@ final class CacheFile extends CacheBase
         // 取缓存目录
         $fileList = $this->getFileList();
 
-        // 取文件位置
-        //$path = $this->path();
-
         // 删除目录 中的每一个数据缓存文件
         foreach ($fileList as $key => $expire) {
             $info = $this->getFile($key);
@@ -207,7 +189,7 @@ final class CacheFile extends CacheBase
      */
     private function path(): string
     {
-        return $this->config['dir'];
+        return configDefault('./cache/','filecache', 'dir');
     }
 
     /**
