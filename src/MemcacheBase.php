@@ -55,7 +55,11 @@ abstract class MemcacheBase extends CacheBase
     private function __construct()
     {
         // 取配置信息
-        $config = config('mem');
+        $config = configDefault(null, 'mem');
+        if (!$config) {
+            trigger_error('缺少缓存必要的配置文件(mem)', E_USER_ERROR);
+        }
+
         $this->config = $config;
 
         // 添加所有缓存服务器

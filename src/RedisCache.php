@@ -10,7 +10,6 @@ namespace icePHP;
  */
 final class RedisCache extends CacheBase
 {
-
     /**
      * 单例句柄
      * @var RedisCache
@@ -45,11 +44,7 @@ final class RedisCache extends CacheBase
      */
     public function clearAll(): bool
     {
-        try {
-            Redis::delete(Redis::listKeys(self::PREFIX . '*'));
-        } catch (RedisException $exception) {
-            writeLog('redis_cache',$exception->getMessage());
-        }
+        Redis::delete(Redis::listKeys(self::PREFIX . '*'));
         return true;
     }
 
@@ -60,11 +55,7 @@ final class RedisCache extends CacheBase
      */
     public function delete(string $key): bool
     {
-        try {
-            Redis::delete(self::PREFIX . $key);
-        } catch (RedisException $exception) {
-            writeLog('redis_cache',$exception->getMessage());
-        }
+        Redis::delete(self::PREFIX . $key);
         return true;
     }
 
@@ -73,11 +64,7 @@ final class RedisCache extends CacheBase
      */
     public function enabled(): bool
     {
-        try {
-            Redis::connection()->ping();
-        } catch (RedisException $exception) {
-            writeLog('redis_cache',$exception->getMessage());
-        }
+        Redis::connection()->ping();
         return true;
     }
 
@@ -89,12 +76,7 @@ final class RedisCache extends CacheBase
     public function get(string $key)
     {
         //从缓存中取值,并解码
-        try {
-            $value = json_decode(Redis::getString(self::PREFIX . $key), true);
-        } catch (RedisException $exception) {
-            writeLog('redis_cache',$exception->getMessage());
-            return null;
-        }
+        $value = json_decode(Redis::getString(self::PREFIX . $key), true);
 
         //没有找到
         if (is_null($value)) {
@@ -115,11 +97,7 @@ final class RedisCache extends CacheBase
     public function doSet(string $key, $data, int $expire = 0): bool
     {
         //我们不关注返回值
-        try {
-            Redis::createString(self::PREFIX . $key, json($data), true, $expire);
-        } catch (RedisException $exception) {
-            writeLog('redis_cache',$exception->getMessage());
-        }
+        Redis::createString(self::PREFIX . $key, json($data), true, $expire);
         return true;
     }
 
@@ -139,14 +117,10 @@ final class RedisCache extends CacheBase
         $this->doSet($key, $data, $expire);
 
         //生成FIELD对象
-        try {
-            $field = Redis::createList(self::PREFIX . 'FIELD:' . $field);
+        $field = Redis::createList(self::PREFIX . 'FIELD:' . $field);
 
-            //向FIELD中增加一个键
-            $field->append($key);
-        } catch (RedisException $exception) {
-            writeLog('redis_cache',$exception->getMessage());
-        }
+        //向FIELD中增加一个键
+        $field->append($key);
         return true;
     }
 
@@ -160,15 +134,11 @@ final class RedisCache extends CacheBase
         // 如果未提供field参数,则清除全部缓存
         if (!$field) {
             //查看有哪些FIELD
-            try {
-                $keys = Redis::listKeys(self::PREFIX . 'FIELD:*');
+            $keys = Redis::listKeys(self::PREFIX . 'FIELD:*');
 
-                //逐个FIELD删除
-                foreach ($keys as $key) {
-                    $this->clear($key);
-                }
-            } catch (RedisException $exception) {
-                writeLog('redis_cache',$exception->getMessage());
+            //逐个FIELD删除
+            foreach ($keys as $key) {
+                $this->clear($key);
             }
             return true;
         }
@@ -177,20 +147,16 @@ final class RedisCache extends CacheBase
          * 删除一个域
          * @var $list RedisList
          */
-        try {
-            $list = Redis::get(self::PREFIX . 'FIELD:' . $field);
+        $list = Redis::get(self::PREFIX . 'FIELD:' . $field);
 
-            //获取一个域中的键
-            $keys = [];
-            if ($list) while ($key = $list->popLeft()) {
-                $keys[] = $key;
-            }
-
-            //删除所有键,以及域
-            Redis::delete(array_merge($keys, [self::PREFIX . 'FIELD:' . $field]));
-        } catch (RedisException $exception) {
-            writeLog('redis_cache',$exception->getMessage());
+        //获取一个域中的键
+        $keys = [];
+        if ($list) while ($key = $list->popLeft()) {
+            $keys[] = $key;
         }
+
+        //删除所有键,以及域
+        Redis::delete(array_merge($keys, [self::PREFIX . 'FIELD:' . $field]));
         return true;
     }
 }
