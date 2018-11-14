@@ -117,7 +117,7 @@ final class RedisCache extends CacheBase
         $this->doSet($key, $data, $expire);
 
         //生成FIELD对象
-        $field = Redis::createList(self::PREFIX . 'FIELD:' . $field);
+        $field = Redis::createList(self::PREFIX . 'FIELD_' . $field);
 
         //向FIELD中增加一个键
         $field->append($key);
