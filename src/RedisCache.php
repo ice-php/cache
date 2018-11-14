@@ -134,7 +134,7 @@ final class RedisCache extends CacheBase
         // 如果未提供field参数,则清除全部缓存
         if (!$field) {
             //查看有哪些FIELD
-            $keys = Redis::listKeys(self::PREFIX . 'FIELD:*');
+            $keys = Redis::listKeys(self::PREFIX . 'FIELD_*');
 
             //逐个FIELD删除
             foreach ($keys as $key) {
@@ -147,7 +147,7 @@ final class RedisCache extends CacheBase
          * 删除一个域
          * @var $list RedisList
          */
-        $list = Redis::get(self::PREFIX . 'FIELD:' . $field);
+        $list = Redis::get(self::PREFIX . 'FIELD_' . $field);
 
         //获取一个域中的键
         $keys = [];
@@ -156,7 +156,7 @@ final class RedisCache extends CacheBase
         }
 
         //删除所有键,以及域
-        Redis::delete(array_merge($keys, [self::PREFIX . 'FIELD:' . $field]));
+        Redis::delete(array_merge($keys, [self::PREFIX . 'FIELD_' . $field]));
         return true;
     }
 }
