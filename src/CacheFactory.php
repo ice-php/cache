@@ -34,40 +34,31 @@ final class CacheFactory
     }
 
     /**
-     * 创建一个指定类型的缓存实例
-     * @param $type string
+     * 根据缓存类型创建缓存对象:redis/file/apc/mem/none
+     * @param string $type
      * @return CacheBase
      */
-    private static function createInstance(string $type): CacheBase
+    public static function createByType(string $type): CacheBase
     {
-        // 取相应类型的缓存配置要求
-        if ($type == 'page') {
-            $config = configDefault('none', 'system', 'cachePage');
-        } elseif ($type == 'data') {
-            $config = configDefault('none', 'system', 'cacheData');
-        } elseif ($type == 'must') {
-            $config = configDefault('file', 'system', 'cacheMust');
-        } else {
-            $config = 'none';
-        }
+        $type = strtolower(trim($type));
 
         // 返回文件缓存对象实例
-        if ($config == 'file') {
+        if ($type == 'file') {
             return CacheFile::instance();
         }
 
         //返回 Redis缓存的对象实例
-        if ($config == 'redis') {
+        if ($type == 'redis') {
             return RedisCache::instance();
         }
 
         //返回APC共享内存的缓存对象
-        if ($config == 'apc') {
+        if ($type == 'apc') {
             return CacheApc::instance();
         }
 
         // 返回内存缓存对象实例
-        if ($config == 'mem') {
+        if ($type == 'mem') {
             //优先检测是否有Memcached扩展
             if (class_exists('memcached', false)) {
                 return Memcached::instance();
@@ -81,6 +72,27 @@ final class CacheFactory
 
         // 返回无缓存对象实例
         return new CacheNone();
+    }
+
+    /**
+     * 创建一个指定配置的缓存实例
+     * @param $config string
+     * @return CacheBase
+     */
+    private static function createInstance(string $config): CacheBase
+    {
+        // 取相应类型的缓存配置要求
+        if ($config == 'page') {
+            $type = configDefault('none', 'system', 'cachePage');
+        } elseif ($config == 'data') {
+            $type = configDefault('none', 'system', 'cacheData');
+        } elseif ($config == 'must') {
+            $type = configDefault('file', 'system', 'cacheMust');
+        } else {
+            $type = 'none';
+        }
+
+        return self::createByType($type);
     }
 
     /**
