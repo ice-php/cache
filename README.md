@@ -14,6 +14,22 @@
     
         创建一个特指缓存对象
         
+    $cache = cacheByType('mem')
+    
+        创建一个Memcache/Memcached缓存对象
+
+    $cache = cacheByType('redis')
+    
+        创建一个redis缓存对象
+
+    $cache = cacheByType('apc')
+    
+        创建一个apc缓存对象
+
+    $cache = cacheByType('file')
+    
+        创建一个File缓存对象
+        
 * 配置信息
     
     system|cachePage 

@@ -155,8 +155,10 @@ final class RedisCache extends CacheBase
             $keys[] = $key;
         }
 
+
         //删除所有键,以及域
-        Redis::delete(array_merge($keys, [self::PREFIX . 'FIELD_' . $field]));
+        $keys[] = self::PREFIX . 'FIELD_' . $field;
+        Redis::delete($keys);
         return true;
     }
 }

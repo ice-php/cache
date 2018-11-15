@@ -13,24 +13,24 @@ final class CacheFactory
 
     /**
      * 获取一个缓存实例
-     * @param string $type 类型:Page(页面缓存)/Data(数据缓存)/Must(必须)
+     * @param string $config 类型:Page(页面缓存)/Data(数据缓存)/Must(必须)
      * @return CacheBase
      */
-    static public function instance($type): CacheBase
+    static public function instance($config): CacheBase
     {
         //防止单词大小写错误
-        $type = strtolower(trim($type));
+        $config = strtolower(trim($config));
 
         //多例句柄
         static $instances = [];
 
         //如果尚未实例化,则创建
-        if (!isset($instances[$type])) {
-            $instances[$type] = self::createInstance($type);
+        if (!isset($instances[$config])) {
+            $instances[$config] = self::createInstance($config);
         }
 
         //返回实例
-        return $instances[$type];
+        return $instances[$config];
     }
 
     /**
