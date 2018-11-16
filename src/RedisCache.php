@@ -152,7 +152,7 @@ final class RedisCache extends CacheBase
         //获取一个域中的键
         $keys = [];
         if ($list) while ($key = $list->popLeft()) {
-            $keys[] = $key;
+            $keys[] = self::PREFIX . $key;
         }
 
 
