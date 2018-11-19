@@ -12,6 +12,9 @@ namespace icePHP;
 final class Memcache extends MemcacheBase
 {
 
+    //缓存类型
+    protected static $type='memcache';
+
     /**
      * 构造一个新的缓存对象实例
      * @return \Memcache

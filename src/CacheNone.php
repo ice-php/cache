@@ -9,6 +9,9 @@ namespace icePHP;
  */
 final class CacheNone extends CacheBase
 {
+    //缓存类型
+    protected static $type = 'none';
+
     /**
      * 删除缓存数据
      * @param string $field 缓存数据的域,如果不提供,则删除全部
@@ -17,6 +20,7 @@ final class CacheNone extends CacheBase
      */
     public function clear(string $field = null): bool
     {
+        Debug::setCache(static::$type,'clear','FIELD',$field);
         return true;
     }
 
@@ -31,17 +35,6 @@ final class CacheNone extends CacheBase
     }
 
     /**
-     * 删除一个缓存数据
-     * @param string $key 缓存数据的名称(键)
-     * @return bool
-     * @see SCacheInterface::delete()
-     */
-    public function delete(string $key): bool
-    {
-        return true;
-    }
-
-    /**
      * 读取一个缓存的数据
      *
      * @param string $key 缓存数据的名称(键)
@@ -50,6 +43,7 @@ final class CacheNone extends CacheBase
      */
     public function get(string $key)
     {
+        parent::debugGet($key, CacheFactory::NOT_FOUND);
         return false;
     }
 

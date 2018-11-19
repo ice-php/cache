@@ -10,6 +10,9 @@ namespace icePHP;
  */
 final class RedisCache extends CacheBase
 {
+    //缓存类型,子类具象
+    protected static $type = 'redis';
+
     /**
      * 单例句柄
      * @var RedisCache
@@ -56,7 +59,7 @@ final class RedisCache extends CacheBase
     public function delete(string $key): bool
     {
         Redis::delete(self::PREFIX . $key);
-        return true;
+        return parent::delete($key);
     }
 
     /**
@@ -78,13 +81,7 @@ final class RedisCache extends CacheBase
         //从缓存中取值,并解码
         $value = json_decode(Redis::getString(self::PREFIX . $key), true);
 
-        //没有找到
-        if (is_null($value)) {
-            return CacheFactory::NOT_FOUND;
-        }
-
-        //返回解码后的值
-        return $value;
+        return parent::debugGet($key, is_null($value) ? CacheFactory::NOT_FOUND : $value);
     }
 
     /**
@@ -116,8 +113,11 @@ final class RedisCache extends CacheBase
         // 缓存数据
         $this->doSet($key, $data, $expire);
 
+        //记录调试信息
+        self::debugSet($field . ':' . $key, $data);
+
         //生成FIELD对象
-        $field = Redis::createList(self::PREFIX . 'TABLE:' . $field);
+        $field = Redis::createList(self::PREFIX . self::PREFIX_FIELD . $field);
 
         //向FIELD中增加一个键
         $field->append($key);
@@ -131,6 +131,8 @@ final class RedisCache extends CacheBase
      */
     public function clear(string $field = null): bool
     {
+        Debug::setCache(static::$type, 'clear', 'FIELD', $field);
+
         // 如果未提供field参数,则清除全部缓存
         if (!$field) {
             //查看有哪些FIELD
@@ -147,7 +149,7 @@ final class RedisCache extends CacheBase
          * 删除一个域
          * @var $list RedisList
          */
-        $list = Redis::get(self::PREFIX . 'TABLE:' . $field);
+        $list = Redis::get(self::PREFIX . self::PREFIX_FIELD . $field);
 
         //获取一个域中的键
         $keys = [];
@@ -157,7 +159,7 @@ final class RedisCache extends CacheBase
 
 
         //删除所有键,以及域
-        $keys[] = self::PREFIX . 'TABLE:' . $field;
+        $keys[] = self::PREFIX . self::PREFIX_FIELD . $field;
         Redis::delete($keys);
         return true;
     }

@@ -11,6 +11,9 @@ namespace icePHP;
  */
 final class CacheFile extends CacheBase
 {
+    //缓存类型
+    protected static $type = 'file';
+
     /**
      * 禁止实例化
      */
@@ -91,6 +94,16 @@ final class CacheFile extends CacheBase
     }
 
     /**
+     * 记录到调试信息中, 未命中
+     * @param string $key
+     * @return mixed
+     */
+    private function getMiss(string $key)
+    {
+        return parent::debugGet($key, CacheFactory::NOT_FOUND);
+    }
+
+    /**
      * 取出缓存的数据
      *
      * @param string $key 数据的名(Key)
@@ -106,7 +119,7 @@ final class CacheFile extends CacheBase
 
         // 如果此数据不在缓存目录中
         if (!isset($fileList[$key])) {
-            return CacheFactory::NOT_FOUND;
+            return self::getMiss($key);
         }
 
         // 取出当时缓存的有效期截止时间戳
@@ -121,16 +134,16 @@ final class CacheFile extends CacheBase
             // 从目录中去除
             unset($fileList[$key]);
             $this->setFileList($fileList);
-            return CacheFactory::NOT_FOUND;
+            return self::getMiss($key);
         }
 
         if (!is_file($path)) {
-            return CacheFactory::NOT_FOUND;
+            return self::getMiss($key);
         }
 
         // 取出缓存的数据
         $data = file_get_contents($path);
-        return unserialize($data);
+        return parent::debugGet($key, unserialize($data));
     }
 
     /**
@@ -160,7 +173,7 @@ final class CacheFile extends CacheBase
         unset($fileList[$key]);
         $this->setFileList($fileList);
 
-        return true;
+        return parent::delete($key);
     }
 
     /**
@@ -189,7 +202,7 @@ final class CacheFile extends CacheBase
      */
     private function path(): string
     {
-        return configDefault('./cache/','filecache', 'dir');
+        return configDefault('./cache/', 'filecache', 'dir');
     }
 
     /**

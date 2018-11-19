@@ -20,7 +20,7 @@ final class CacheApc extends CacheBase
     /**
      * @var string apcu/apc
      */
-    private static $type;
+    protected static $type;
 
     /**
      * 获取本类单例的方法,公开
@@ -80,7 +80,7 @@ final class CacheApc extends CacheBase
     public function get(string $key)
     {
         $func = self::$type . '_fetch';
-        return $func($key);
+        return parent::debugGet($key, $func($key));
     }
 
     /**
@@ -93,7 +93,7 @@ final class CacheApc extends CacheBase
     {
         $func = self::$type . '_delete';
         $func($key);
-        return true;
+        return parent::delete($key);
     }
 
     /**

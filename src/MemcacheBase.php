@@ -81,7 +81,9 @@ abstract class MemcacheBase extends CacheBase
          * @var $handle \Memcache|\Memcached
          */
         $handle = $this->_handle;
-        return $handle->delete($key);
+        $ret = $handle->delete($key);
+        Debug::setCache(static::$type, 'delete', $key, $ret);
+        return $ret;
     }
 
     /**
@@ -129,12 +131,7 @@ abstract class MemcacheBase extends CacheBase
         // 从缓存中读取内容
         $ret = $handle->get($key);
 
-        // 没找到
-        if ($ret === false) {
-            return CacheFactory::NOT_FOUND;
-        }
-
-        // 返回内容
-        return $ret;
+        // 找到否
+        return parent::debugGet($key, $ret === false ? CacheFactory::NOT_FOUND : $ret);
     }
 }
