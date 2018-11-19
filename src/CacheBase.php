@@ -126,10 +126,10 @@ abstract class CacheBase
     /**
      * 将写入缓存 记录到调试信息中
      * @param string $key
-     * @param string $value
+     * @param mixed $value
      */
-    protected static function debugSet(string $key, string $value): void
+    protected static function debugSet(string $key, $value): void
     {
-        Debug::setCache(static::$type, 'set', $key, $value);
+        Debug::setCache(static::$type, 'set', $key, is_string($value) ? $value : json($value));
     }
 }
