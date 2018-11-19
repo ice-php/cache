@@ -36,7 +36,7 @@ final class RedisCache extends CacheBase
     }
 
     //本框架使用的缓存键的前缀(Redis Cache)
-    const PREFIX = 'RC:';
+    const PREFIX = 'ice:';
 
     /**
      * 清除所有缓存相关的键
@@ -117,7 +117,7 @@ final class RedisCache extends CacheBase
         $this->doSet($key, $data, $expire);
 
         //生成FIELD对象
-        $field = Redis::createList(self::PREFIX . 'FIELD_' . $field);
+        $field = Redis::createList(self::PREFIX . 'TABLE:' . $field);
 
         //向FIELD中增加一个键
         $field->append($key);
@@ -134,7 +134,7 @@ final class RedisCache extends CacheBase
         // 如果未提供field参数,则清除全部缓存
         if (!$field) {
             //查看有哪些FIELD
-            $keys = Redis::listKeys(self::PREFIX . 'FIELD_*');
+            $keys = Redis::listKeys(self::PREFIX . 'TABLE:*');
 
             //逐个FIELD删除
             foreach ($keys as $key) {
@@ -147,7 +147,7 @@ final class RedisCache extends CacheBase
          * 删除一个域
          * @var $list RedisList
          */
-        $list = Redis::get(self::PREFIX . 'FIELD_' . $field);
+        $list = Redis::get(self::PREFIX . 'TABLE:' . $field);
 
         //获取一个域中的键
         $keys = [];
@@ -157,7 +157,7 @@ final class RedisCache extends CacheBase
 
 
         //删除所有键,以及域
-        $keys[] = self::PREFIX . 'FIELD_' . $field;
+        $keys[] = self::PREFIX . 'TABLE:' . $field;
         Redis::delete($keys);
         return true;
     }
