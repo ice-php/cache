@@ -55,7 +55,7 @@ final class CacheFile extends CacheBase
      * @param int $expire 秒数
      * @return bool
      */
-    protected function doSet(string $srcKey, $data, int $expire = 0): bool
+    protected function doSet(string $srcKey, $data, int $expire = self::EXPIRE): bool
     {
         // 获取文件名与文件位置
         list ($key, $path, $sqlPath) = $this->getFile($srcKey);

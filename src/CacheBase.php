@@ -14,6 +14,9 @@ abstract class CacheBase
     //域前缀
     const PREFIX_FIELD = 'Field:';
 
+    //默认的缓存时间(三天)
+    const EXPIRE=259200;
+
     /**
      * 删除缓存数据
      * @param string $field 缓存数据的域,如果不提供,则删除全部
@@ -69,7 +72,7 @@ abstract class CacheBase
      * @param int $expire 有效期
      * @return boolean
      */
-    public function set(string $field, string $key, $data, int $expire = 0): bool
+    public function set(string $field, string $key, $data, int $expire = self::EXPIRE): bool
     {
         // 缓存数据
         $this->doSet($key, $data, $expire);
@@ -85,7 +88,7 @@ abstract class CacheBase
 
         // 增加一个键,并保存回去,以便以后统一清除
         $keys[] = $key;
-        return $this->doSet(self::PREFIX_FIELD . $field, $keys, 0);
+        return $this->doSet(self::PREFIX_FIELD . $field, $keys, $expire);
     }
 
     /**

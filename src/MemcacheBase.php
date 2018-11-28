@@ -105,7 +105,7 @@ abstract class MemcacheBase extends CacheBase
      * @param $expire int 有效期(秒数,0表示永久)
      * @return  bool
      */
-    protected function doSet(string $key, $data, int $expire = 0): bool
+    protected function doSet(string $key, $data, int $expire = self::EXPIRE): bool
     {
         /**
          * @var $handle \Memcache|\Memcached
