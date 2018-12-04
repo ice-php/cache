@@ -94,7 +94,7 @@ final class RedisCache extends CacheBase
     public function doSet(string $key, $data, int $expire = self::EXPIRE): bool
     {
         //我们不关注返回值
-        Redis::createString(self::PREFIX . $key, json($data), true, $expire);
+        Redis::string(self::PREFIX . $key, json($data), true, $expire);
         return true;
     }
 
